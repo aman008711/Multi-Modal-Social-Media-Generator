@@ -264,3 +264,36 @@ if __name__ == "__main__":
         port=8000,
         reload=True
     )
+
+
+from fastapi import FastAPI
+from app.celery_worker import celery_app
+from app.services.image_tasks import generate_image_task
+
+app = FastAPI()
+
+@app.post("/generate-image")
+def generate_image(request: dict):
+    task = generate_image_task.delay(request)
+
+    return {
+        "message": "Image generation started",
+        "job_id": task.id
+    }
+
+@app.get("/result/{job_id}")
+def get_result(job_id: str):
+    result = celery_app.AsyncResult(job_id)
+
+    if result.state == "PENDING":
+        return {"status": "Processing..."}
+
+    elif result.state == "SUCCESS":
+        return result.result
+
+    elif result.state == "FAILURE":
+        return {
+            "status":"Failed",
+            "error":str(result.result)
+        }
+    return {"status": result.state}

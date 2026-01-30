@@ -9,9 +9,12 @@ Multi-Modal-Social-Media-Generator/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py                 # FastAPI application
+│   ├── celery_worker.py 
+│   │
 │   ├── services/
 │   │   ├── __init__.py
-│   │   └── caption_generator.py # Caption generation service
+│   │   ├──caption_generator.py # Caption generation service
+│   │   └── image_tasks.py  
 │   └── utils/
 │       ├── __init__.py
 │       ├── brand_personas.py    # Brand persona definitions
@@ -36,7 +39,7 @@ python -m venv .venv
 
 2. **Install dependencies**:
 ```bash
-pip install transformers torch fastapi uvicorn
+pip install transformers torch fastapi uvicorn celery redis
 ```
 
 ## Usage
@@ -54,7 +57,15 @@ This will:
 - Generate sample marketing captions
 - Show available API endpoints
 
-### 2. Start the FastAPI Server
+### 2. Start Redis
+redis-server
+# OR
+docker run -p 6379:6379 redis
+
+### 3. Start Celery Worker
+celery -A app.celery_worker.celery_app worker --loglevel=info
+
+### 4. Start the FastAPI Server
 
 ```bash
 uvicorn app.main:app --reload
@@ -62,7 +73,7 @@ uvicorn app.main:app --reload
 
 The API will be available at: `http://localhost:8000`
 
-### 3. API Endpoints
+### 5. API Endpoints
 
 #### Get Available Personas
 ```bash
@@ -91,7 +102,7 @@ curl -X POST http://localhost:8000/generate-multi-persona \
   }'
 ```
 
-### 4. Interactive API Documentation
+### 6. Interactive API Documentation
 
 Visit `http://localhost:8000/docs` in your browser for Swagger UI documentation.
 
@@ -156,6 +167,24 @@ Download happens on first run. Subsequent requests are faster.
 ### GPU Not Detected
 Ensure PyTorch CUDA is properly installed. The system will automatically fallback to CPU.
 
+---
+
+## 🚀 Week 3 – Async Image Processing
+
+### Overview
+Image generation now runs as a background task using Celery and Redis.
+
+### What Changed?
+- Integrated Celery for async task handling
+- Configured Redis as broker and backend
+- API now returns Job ID immediately
+- Added result endpoint for status tracking
+
+### Benefits
+- Non-blocking API
+- Improved scalability
+- Production-ready architecture
+
 ## Next Steps
 
 - [ ] Add image analysis for visual content
@@ -166,17 +195,29 @@ Ensure PyTorch CUDA is properly installed. The system will automatically fallbac
 
 ---
 
-**Version**: 1.0.0
+**Version**: 1.3.0
 **Created**: Week 1 Development Cycle
 **Status**: Testing Phase ✅
  
 
+---
 
-'''Workflow 1: Quick Test
+''' 
+Workflow 1: Quick Test
 python test_api.py
 
-Workflow 2: Run Full Server
-python -m uvicorn app.main:app --host localhost --port 8000
+Workflow 2: Run Full Server (Async Mode -Week 3)
+
+1️⃣ Start Redis
+redis-server
+OR
+docker run -p 6379:6379 redis
+
+2️⃣ Start Celery Worker
+celery -A app.celery_worker.celery_app worker --loglevel=info
+
+3️⃣ Start FastAPI Server
+uvicorn app.main:app --host localhost --port 8000
 # Open http://localhost:8000/docs in browser
 
 Workflow 3: Development

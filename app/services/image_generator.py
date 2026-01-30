@@ -93,8 +93,11 @@ class ImageGenerator:
             os.makedirs(output_dir, exist_ok=True)
             
             # Save image
+            import re
+            safe_brief = re.sub(r'[<>''/\\|?*{}]','',user_brief)
+                                
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"{user_brief.replace(' ', '_')}_{timestamp}.png"
+            filename = f"{safe_brief[:30].replace(' ', '_')}_{timestamp}.png"
             filepath = os.path.join(output_dir, filename)
             image.save(filepath)
             
