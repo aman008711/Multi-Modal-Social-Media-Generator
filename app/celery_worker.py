@@ -1,4 +1,6 @@
 from celery import Celery
+import warnings
+warnings.filterwarnings("ignore")
 
 celery_app = Celery(
     "worker",
