@@ -223,15 +223,14 @@ uvicorn app.main:app --host localhost --port 8000
 Workflow 3: Development
 python -m uvicorn app.main:app --reload --host localhost --port 8000
 '''
-# Multi-Modal Social Media Generator — Week 4
+## Week 4 — Full Integration
 
-## Features
-- Text input converted to enhanced prompts using Prompt Enhancer
-- Image generation with post-processing (resize + watermark)
-- FastAPI server with `/result` endpoint
-- Ready for CPU and GPU (CUDA optional)
+- Prompt Enhancer integrated for converting user briefs into enhanced prompts  
+- Image generation with post-processing (resize + watermark)  
+- FastAPI server with `/result` endpoint to generate images via API  
+- Ready for CPU or GPU (CUDA optional)  
 
-## Installation
+### Installation
 1. Clone the repo:
 ```bash
 git clone <your-repo-url>
