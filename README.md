@@ -221,16 +221,142 @@ uvicorn app.main:app --host localhost --port 8000
 # Open http://localhost:8000/docs in browser
 
 Workflow 3: Development
-python -m uvicorn app.main:app --reload --host localhost --port 8000
-'''
-## Week 4 — Full Integration
+python -m uvicorn app.main:app --reload --host
 
-- Prompt Enhancer integrated for converting user briefs into enhanced prompts  
-- Image generation with post-processing (resize + watermark)  
-- FastAPI server with `/result` endpoint to generate images via API  
-- Ready for CPU or GPU (CUDA optional)  
+ ---
+ 
+✅ Week 4 — Full Integration (Text + Image + API)
 
-### Installation
-1. Clone the repo:
-```bash
-git clone <your-repo-url>
+Objective:
+Build a complete pipeline where a user provides a short text brief and receives a generated image through an API.
+
+Integrated Components
+Component	Responsibility
+Prompt Enhancer	Converts simple brief into detailed, professional image prompt
+Image Generator	Generates image using Diffusers / Torch
+Post-Processing	Resize + watermark for final output
+FastAPI	/result endpoint to trigger the full pipeline
+Swagger UI	Test API without writing code
+🧠 System Architecture
+User Brief (Text)
+        ↓
+Prompt Enhancer
+        ↓
+AI Image Generation
+        ↓
+Image Post-Processing
+        ↓
+Saved Output Image
+        ↓
+FastAPI /result Endpoint
+
+🛠️ Tech Stack
+
+Python
+
+FastAPI
+
+Uvicorn
+
+Diffusers
+
+PyTorch
+
+Pillow (PIL)
+
+Prompt Engineering
+
+📁 Project Structure
+Multi-Modal-Social-Media-Generator
+│
+├── app
+│   ├── main.py                     # FastAPI entry point
+│   ├── services
+│   │   ├── week4_image_generator.py
+│   │   └── image_generator.py
+│   └── utils
+│       └── prompt_enhancer.py
+│
+├── requirements.txt
+└── README.md
+
+⚙️ Setup Guide (For Team Members)
+1️⃣ Clone Repository
+git clone https://github.com/aman008711/Multi-Modal-Social-Media-Generator.git
+cd Multi-Modal-Social-Media-Generator
+
+2️⃣ Create Virtual Environment
+python -m venv .venv
+.venv\Scripts\activate
+
+3️⃣ Install Dependencies
+pip install -r requirements.txt
+
+4️⃣ Run FastAPI Server (Main Entry)
+uvicorn app.main:app --reload
+
+
+Expected output:
+
+Uvicorn running on http://127.0.0.1:8000
+
+🌐 API Usage via Swagger UI
+
+Open in browser:
+
+http://127.0.0.1:8000/docs
+
+Endpoint: POST /result
+
+Click Try it out and use:
+
+{
+  "brief": "Red running shoes",
+  "style": "product_ad",
+  "quality": "high"
+}
+
+
+Click Execute.
+
+🖼️ Output — Where Image is Saved
+
+The generated image is saved automatically in the project root folder.
+
+Example:
+
+output_Red_running_shoes.png
+
+
+Open this file to view the result.
+
+▶️ Run Generator Without API (Optional Testing)
+py -m app.services.week4_image_generator
+
+🧪 Sample Briefs to Try
+
+Diamond necklace close-up
+
+Luxury red lipstick
+
+Modern wooden chair
+
+Cheese burst pizza slice
+
+White sneakers for men
+
+🎯 Key Learning Outcome
+
+Converting user text into professional prompts
+
+AI-based image generation
+
+Image post-processing automation
+
+Exposing AI pipeline through REST API
+
+Text → Prompt → Image → API
+
+📌 Conclusion
+
+This project showcases a real-world multi-modal AI pipeline where text input drives image generation and is delivered through a production-ready API.
